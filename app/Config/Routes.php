@@ -26,5 +26,6 @@ $routes->group('', ['namespace' => 'App\Controllers\adminController'], function 
 $routes->group('', ['namespace' => 'App\Controllers\UserController'], function ($routes) {
     $routes->get('/employeeDashboard', 'UserNavigation::index');
     $routes->get('/billingPage', 'billingClients::index');
-    $routes->get('/computeBilling', 'UserNavigation::billingPage');
+    $routes->get('/employeeDashboard', 'UserNavigation::index');
+    $routes->get('/computeBilling', 'getClientController::index');
 });
