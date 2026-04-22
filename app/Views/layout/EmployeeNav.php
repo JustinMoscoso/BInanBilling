@@ -11,7 +11,7 @@
                     <a class="nav-link active text-white" aria-current="page" href="#">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="<?= site_url('billingPage') ?>">Compute Electrical Bill</a>
+                    <a class="nav-link text-white" href="<?= site_url('computeBilling') ?>">Compute Electrical Bill</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white" href="#">Billing History</a>

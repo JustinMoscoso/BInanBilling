@@ -12,10 +12,13 @@
                         href="<?= site_url('dashboard') ?>">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="<?= site_url('addEmployee') ?>">Manage Accounts</a>
+                    <a class="nav-link text-white" href="<?= site_url('addEmployee') ?>">Manage Employee</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white" href="<?= site_url('employees') ?>">Employees</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="<?= site_url('addClient') ?>">Manage Client</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white" href="#">Audit</a>

@@ -18,10 +18,13 @@ $routes->group('', ['namespace' => 'App\Controllers\adminController'], function 
     $routes->get('/addEmployee', 'EmployeeController::index');
     $routes->post('/addEmployee', 'EmployeeController::store');
     $routes->get('/employees', 'EmployeeListController::index');
+    $routes->get('/addClient', 'clientController::index');
+    $routes->post('/addClient', 'clientController::store');
 });
 
 // Employee routes
 $routes->group('', ['namespace' => 'App\Controllers\UserController'], function ($routes) {
     $routes->get('/employeeDashboard', 'UserNavigation::index');
     $routes->get('/billingPage', 'billingClients::index');
+    $routes->get('/computeBilling', 'UserNavigation::billingPage');
 });

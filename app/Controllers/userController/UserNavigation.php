@@ -10,4 +10,8 @@ class UserNavigation extends BaseController
         return view('employeeUI/employeeDashboard');
     }
 
+    public function billingPage()
+    {
+        return view('employeeUI/computeBilling');
+    }
 }

@@ -16,9 +16,9 @@
         <!-- Welcome -->
         <div class="mb-4">
             <h3>Welcome,
-                <?= session()->get('username') ?> 👋
+                <?= session()->get('username') ?>
             </h3>
-            <p class="text-muted">Here’s your dashboard overview</p>
+            <p class="text-muted">Dashboard</p>
         </div>
 
         <!-- 🔷 Cards -->
