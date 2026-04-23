@@ -4,30 +4,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Dashboard</title>
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons (IMPORTANT) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
 </head>
 
 <body>
+
+    <!-- Sidebar -->
     <?= view('layout/employeeNav') ?>
 
-    <div class="container py-5">
+    <!-- Main Content -->
+    <div style="margin-left: 300px;" class="p-4">
 
         <!-- Welcome -->
         <div class="mb-4">
-            <h3>Welcome,
-                <?= session()->get('username') ?>
-            </h3>
+            <h3>Welcome, <?= session()->get('username') ?></h3>
             <p class="text-muted">Dashboard</p>
         </div>
 
-        <!-- 🔷 Cards -->
+        <!-- Cards -->
         <div class="row g-4">
 
-            <!-- Card 1 -->
             <div class="col-md-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body text-center">
+                <div class="card shadow-sm border-0 text-center">
+                    <div class="card-body">
                         <i class="bi bi-file-earmark-text display-5 text-primary"></i>
                         <h5 class="mt-3">My Bills</h5>
                         <p class="text-muted">View your billing records</p>
@@ -36,10 +42,9 @@
                 </div>
             </div>
 
-            <!-- Card 2 -->
             <div class="col-md-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body text-center">
+                <div class="card shadow-sm border-0 text-center">
+                    <div class="card-body">
                         <i class="bi bi-clock-history display-5 text-success"></i>
                         <h5 class="mt-3">Usage History</h5>
                         <p class="text-muted">Track your consumption</p>
@@ -48,10 +53,9 @@
                 </div>
             </div>
 
-            <!-- Card 3 -->
             <div class="col-md-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body text-center">
+                <div class="card shadow-sm border-0 text-center">
+                    <div class="card-body">
                         <i class="bi bi-person display-5 text-warning"></i>
                         <h5 class="mt-3">Profile</h5>
                         <p class="text-muted">Update your information</p>
@@ -62,11 +66,11 @@
 
         </div>
 
-        <!-- 🔷 Table Section (Example) -->
+        <!-- Table -->
         <div class="card mt-5 shadow-sm border-0">
             <div class="card-body">
 
-                <h5 class="mb-3">Recent Activity</h5>
+                <h5>Recent Activity</h5>
 
                 <table class="table table-hover">
                     <thead class="table-dark">
@@ -81,11 +85,6 @@
                             <td>April 21, 2026</td>
                             <td>Logged in</td>
                             <td><span class="badge bg-success">Success</span></td>
-                        </tr>
-                        <tr>
-                            <td>April 20, 2026</td>
-                            <td>Viewed bills</td>
-                            <td><span class="badge bg-primary">Info</span></td>
                         </tr>
                     </tbody>
                 </table>

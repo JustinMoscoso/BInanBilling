@@ -30,7 +30,7 @@
             color: white;
             padding: 40px;
             width: 350px;
-            height: 100%;
+            border-radius: 10px;
             backdrop-filter: blur(6px);
         }
 
@@ -69,9 +69,10 @@
 <body>
 
     <div class="bg-image">
-        <div class="overlay d-flex">
+        <div class="overlay d-flex justify-content-center align-items-center">
 
             <!-- LEFT LOGIN PANEL -->
+
             <div class="login-panel d-flex flex-column justify-content-center">
 
                 <h2 class="mb-4">Welcome Back</h2>
@@ -100,8 +101,7 @@
                 </form>
             </div>
 
-            <!-- RIGHT SIDE -->
-            <div class="flex-grow-1"></div>
+
 
         </div>
     </div>

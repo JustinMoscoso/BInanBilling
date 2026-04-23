@@ -6,17 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compute Billing</title>
 
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
         body {
-            background: #f5f7fb;
+            background-color: #f8f9fa;
         }
 
         .card {
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+        }
+
+        .total-box {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #198754;
         }
     </style>
 </head>
@@ -25,72 +33,95 @@
 
     <?= view('layout/EmployeeNav') ?>
 
-    <div class="container py-5">
+    <div style="margin-left: 300px;" class="p-4">
 
-        <h3 class="fw-bold mb-4">⚡ Compute Electrical Bill</h3>
+        <!-- HEADER -->
+        <div class="mb-4">
+            <h3 class="fw-bold">
+                <i class="bi bi-lightning-charge-fill text-warning"></i>
+                Compute Electrical Bill
+            </h3>
+            <p class="text-muted">Select a client and calculate electricity usage.</p>
+        </div>
 
         <div class="row g-4">
 
-            <!-- CLIENTS -->
+            <!-- CLIENT LIST -->
             <div class="col-md-6">
-                <div class="card p-3">
-                    <h5>👥 Clients</h5>
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white fw-semibold">
+                        <i class="bi bi-people-fill"></i> Clients
+                    </div>
 
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Select</th>
-                                <th>Name</th>
-                                <th>Meter</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($clients as $row): ?>
+                    <div class="card-body p-0">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
                                 <tr>
-                                    <td>
-                                        <input type="radio" name="selectedClient"
-                                            onclick='selectClient(<?= json_encode($row) ?>)'>
-                                    </td>
-                                    <td><?= esc($row['full_name']) ?></td>
-                                    <td><?= esc($row['meter_number']) ?></td>
+                                    <th></th>
+                                    <th>Name</th>
+                                    <th>Meter</th>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($clients as $row): ?>
+                                    <tr>
+                                        <td>
+                                            <input type="radio" name="selectedClient"
+                                                onclick='selectClient(<?= json_encode($row) ?>)'>
+                                        </td>
+                                        <td><?= esc($row['full_name']) ?></td>
+                                        <td><?= esc($row['meter_number']) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <!-- BILLING -->
+            <!-- BILLING FORM -->
             <div class="col-md-6">
-                <div class="card bg-dark text-light p-4">
-
-                    <h5>⚡ Billing Calculator</h5>
-
-                    <p><strong>Client:</strong> <span id="clientName">Select a client</span></p>
-                    <p><strong>Meter:</strong> <span id="clientMeter">-</span></p>
-
-                    <!-- KW INPUT -->
-                    <div class="mb-3">
-                        <label>Consumption (KW)</label>
-                        <input type="number" id="kwInput" class="form-control" oninput="computeBill()">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white fw-semibold">
+                        <i class="bi bi-calculator-fill"></i> Billing Calculator
                     </div>
 
-                    <!-- 📅 DUE DATE -->
-                    <div class="mb-3">
-                        <label>Due Date</label>
-                        <input type="date" id="dueDateInput" class="form-control" min="<?= date('Y-m-d') ?>">
+                    <div class="card-body">
+
+                        <div class="mb-3">
+                            <label class="form-label">Client</label>
+                            <input type="text" id="clientName" class="form-control" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Meter</label>
+                            <input type="text" id="clientMeter" class="form-control" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Consumption (KW)</label>
+                            <input type="number" id="kwInput" class="form-control" oninput="computeBill()">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Due Date</label>
+                            <input type="date" id="dueDateInput" class="form-control" min="<?= date('Y-m-d') ?>">
+                        </div>
+
+                        <hr>
+
+                        <div class="text-center mb-3">
+                            <div class="text-muted">Total Bill</div>
+                            <div class="total-box">
+                                ₱<span id="totalBill">0.00</span>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-success w-100" onclick="saveBill(event)">
+                            <i class="bi bi-save"></i> Save Bill
+                        </button>
+
                     </div>
-
-                    <hr>
-
-                    <h6>Total Bill</h6>
-                    <h2>₱<span id="totalBill">0.00</span></h2>
-
-                    <!-- SAVE BUTTON -->
-                    <button class="btn btn-success w-100 mt-3" onclick="saveBill(event)">
-                        💾 Save Bill
-                    </button>
-
                 </div>
             </div>
 

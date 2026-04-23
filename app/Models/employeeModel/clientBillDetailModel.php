@@ -6,15 +6,13 @@ use CodeIgniter\Model;
 class clientBillDetailModel extends Model
 {
     protected $table = 'bill_details';
-    protected $primaryKey = 'bill_id';
+    protected $primaryKey = 'detail_id';
 
     protected $allowedFields = [
+        'detail_id',
         'bill_id',
-        'client_id',
-        'computed_by',
-        'billing_date',
-        'due_date',
-        'total_amount',
-        'created_at'
+        'units_consumed',
+        'rate_per_unit',
+        'subtotal',
     ];
 }

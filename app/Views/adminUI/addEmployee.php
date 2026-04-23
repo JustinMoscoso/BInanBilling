@@ -14,7 +14,7 @@
 
     <?= view('layout/adminNav') ?>
 
-    <div class="container py-5">
+    <div style="margin-left: 250px;" class="p-4">
 
         <div class="row justify-content-center">
             <div class="col-md-6">

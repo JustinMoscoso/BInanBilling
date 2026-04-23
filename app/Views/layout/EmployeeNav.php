@@ -1,39 +1,88 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand text-white" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active text-white" aria-current="page" href="#">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="<?= site_url('computeBilling') ?>">Compute Electrical Bill</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#">Billing History</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#">Audit</a>
-                </li>
-            </ul>
+<style>
+    .sidebar .nav-link {
+        font-size: 16px;
+        padding: 10px 15px;
+        transition: all 0.2s ease;
+    }
 
-            // profile dropdown
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle " href="#" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li><a class="dropdown-item" href="/logout">Logout</a></li>
-                    </ul>
+    .sidebar .nav-link:hover {
+        background-color: white !important;
+        color: black !important;
+        border-radius: 8px;
+    }
+
+    .sidebar .nav-link.active {
+        background-color: white;
+        color: black !important;
+        border-radius: 8px;
+    }
+
+    .sidebar i {
+        font-size: 18px;
+    }
+</style>
+<div class="d-flex">
+
+    <!-- Sidebar -->
+    <div class="bg-dark text-white p-3 vh-100 position-fixed sidebar" style="width: 300px;">
+
+        <div class="container-fluid">
+            <a class="navbar-brand" href="<?= site_url('employeeDashboard') ?>">
+                <img src="<?= base_url('img/logo.png') ?>" alt="Logo" style="heigh:80px;
+                width:80px;" class="rounded-pill">
+            </a>
+        </div>
+        <hr>
+
+        <ul class="nav nav-pills flex-column mb-auto">
+
+            <li>
+                <a href="<?= site_url('employeeDashboard') ?>" class="nav-link fs-4 text-white">
+                    <i class="bi bi-speedometer2 me-2 fs-4"></i> Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="<?= site_url('computeBilling') ?>" class="nav-link fs-4 text-white">
+                    <i class="bi bi-calculator me-2 fs-4"></i> Compute Bill
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="nav-link text-white fs-4">
+                    <i class="bi bi-receipt me-2 fs-4"></i> Billing History
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="nav-link text-white fs-4">
+                    <i class="bi bi-clipboard-check me-2 fs-4"></i> Audit
+                </a>
+            </li>
+
+        </ul>
+
+
+        <hr>
+
+        <!-- Profile -->
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center fs-4 text-white text-decoration-none dropdown-toggle"
+                data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle me-2 fs-4"></i>
+                <strong><?= session()->get('username') ?></strong>
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-dark">
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li>
+                    <hr class="dropdown-divider">
                 </li>
+                <li><a class="dropdown-item" href="/logout">Logout</a></li>
             </ul>
         </div>
+
     </div>
-</nav>
+
+</div>

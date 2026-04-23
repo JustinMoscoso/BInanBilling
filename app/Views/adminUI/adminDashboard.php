@@ -14,7 +14,7 @@
 
 <body>
     <?= view('layout/adminNav') ?>
-    <div class="container mt-4">
+<div style="margin-left: 250px;" class="p-4">
 
         <!-- Welcome -->
         <h3 class="mb-4">Welcome,
