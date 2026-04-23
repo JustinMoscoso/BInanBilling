@@ -8,7 +8,7 @@ class Authentication extends BaseController
 {
     public function index()
     {
-        return view('authentication/loginPage'); // your HTML page
+        return view('authentication/loginPage');
     }
 
     public function login()
@@ -16,34 +16,39 @@ class Authentication extends BaseController
         $session = session();
         $model = new UserModel();
 
-        $username = $this->request->getPost('username');
+        $username = trim($this->request->getPost('username'));
         $password = $this->request->getPost('password');
+
+        if (!$username || !$password) {
+            return redirect()->back()->with('error', 'Username and password are required');
+        }
 
         $user = $model->where('username', $username)->first();
 
-        if ($user) {
-            if (password_verify($password, $user['password_hash'])) {
-
-                $session->set([
-                    'user_id' => $user['user_id'],
-                    'username' => $user['username'],
-                    'role_id' => $user['role_id'],
-                    'logged_in' => true
-                ]);
-
-                if ($user['role_id'] == 1) {
-                    return redirect()->to('/dashboard');
-                } elseif ($user['role_id'] == 2) {
-                    return redirect()->to('/employeeDashboard');
-                } else {
-                    return redirect()->to('/');
-                }
-
-            } else {
-                return redirect()->back()->with('error', 'Wrong password');
-            }
-        } else {
+        if (!$user) {
             return redirect()->back()->with('error', 'User not found');
+        }
+
+        if (!password_verify($password, $user['password_hash'])) {
+            return redirect()->back()->with('error', 'Wrong password');
+        }
+
+        // ✅ SET SESSION
+        $session->set([
+            'user_id' => $user['user_id'],
+            'username' => $user['username'],
+            'role_id' => $user['role_id'],
+            'logged_in' => true
+        ]);
+
+        // ✅ REDIRECT BASED ON ROLE
+        switch ($user['role_id']) {
+            case 1:
+                return redirect()->to('/dashboard');
+            case 2:
+                return redirect()->to('/employeeDashboard');
+            default:
+                return redirect()->to('/');
         }
     }
 

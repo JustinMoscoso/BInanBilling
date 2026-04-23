@@ -22,10 +22,11 @@ $routes->group('', ['namespace' => 'App\Controllers\adminController'], function 
     $routes->post('/addClient', 'clientController::store');
 });
 
-// Employee routes
 $routes->group('', ['namespace' => 'App\Controllers\UserController'], function ($routes) {
     $routes->get('/employeeDashboard', 'UserNavigation::index');
-    $routes->get('/billingPage', 'billingClients::index');
-    $routes->get('/employeeDashboard', 'UserNavigation::index');
-    $routes->get('/computeBilling', 'getClientController::index');
+    $routes->get('/billingPage', 'BillingClients::index');
+    $routes->get('/computeBilling', 'GetClientController::index');
+
+    // ✅ FIXED ROUTE
+    $routes->post('compute-bill', 'ComputeBillsController::billComputation');
 });
