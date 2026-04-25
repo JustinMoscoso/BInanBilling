@@ -26,7 +26,7 @@ $routes->group('', ['namespace' => 'App\Controllers\UserController'], function (
     $routes->get('/employeeDashboard', 'UserNavigation::index');
     $routes->get('/billingPage', 'BillingClients::index');
     $routes->get('/computeBilling', 'GetClientController::index');
-
+    $routes->get('/billingHistory', 'billingHistoryController::index');
     // ✅ FIXED ROUTE
-    $routes->post('compute-bill', 'ComputeBillsController::billComputation');
+    $routes->post('compute_bill', 'ComputeBillsController::billComputation');
 });

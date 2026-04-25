@@ -186,7 +186,7 @@
             btn.disabled = true;
             btn.innerText = "Saving...";
 
-            fetch("<?= base_url('compute-bill') ?>", {
+            fetch("<?= base_url('compute_bill') ?>", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

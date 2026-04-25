@@ -37,39 +37,40 @@
         <ul class="nav nav-pills flex-column mb-auto">
 
             <li>
-                <a href="<?= site_url('employeeDashboard') ?>" class="nav-link fs-4 text-white">
-                    <i class="bi bi-speedometer2 me-2 fs-4"></i> Dashboard
+                <a href="<?= site_url('employeeDashboard') ?>"
+                    class="nav-link fs-5 text-white <?= uri_string() == 'employeeDashboard' ? 'active' : 'text-white' ?>">
+                    <i class="bi bi-speedometer2 me-2 fs-5"></i> Dashboard
                 </a>
             </li>
 
             <li>
-                <a href="<?= site_url('computeBilling') ?>" class="nav-link fs-4 text-white">
-                    <i class="bi bi-calculator me-2 fs-4"></i> Compute Bill
+                <a href="<?= site_url('computeBilling') ?>"
+                    class="nav-link fs-5 text-white <?= uri_string() == 'computeBilling' ? 'active' : 'text-white' ?>">
+                    <i class="bi bi-calculator me-2 fs-5"></i> Compute Bill
                 </a>
             </li>
 
             <li>
-                <a href="#" class="nav-link text-white fs-4">
-                    <i class="bi bi-receipt me-2 fs-4"></i> Billing History
+                <a href="<?= site_url('billingHistory') ?>" class="nav-link text-white fs-5">
+                    <i class="bi bi-receipt me-2 fs-5"></i> Billing History
                 </a>
             </li>
 
             <li>
-                <a href="#" class="nav-link text-white fs-4">
-                    <i class="bi bi-clipboard-check me-2 fs-4"></i> Audit
+                <a href="#" class="nav-link text-white fs-5">
+                    <i class="bi bi-clipboard-check me-2 fs-5"></i> Audit
                 </a>
             </li>
 
         </ul>
 
-
         <hr>
 
         <!-- Profile -->
         <div class="dropdown">
-            <a href="#" class="d-flex align-items-center fs-4 text-white text-decoration-none dropdown-toggle"
+            <a href="#" class="d-flex align-items-center fs-5 text-white text-decoration-none dropdown-toggle"
                 data-bs-toggle="dropdown">
-                <i class="bi bi-person-circle me-2 fs-4"></i>
+                <i class="bi bi-person-circle me-2 fs-5"></i>
                 <strong><?= session()->get('username') ?></strong>
             </a>
 

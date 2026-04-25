@@ -14,7 +14,7 @@
     <!-- Navbar -->
     <?= view('layout/adminNav') ?>
 
-    <div style="margin-left: 250px;" class="p-4">
+    <div style="margin-left: 300px;" class="p-4">
 
         <!-- 🔥 CALL YOUR REUSABLE TABLE -->
         <?= view('layout/Table', [
