@@ -3,62 +3,59 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Admin Dashboard</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
 <body>
+
     <?= view('layout/adminNav') ?>
+
     <div style="margin-left: 300px;" class="p-4">
 
         <!-- Welcome -->
-        <h3 class="mb-4">Welcome,
-            <?= esc($username) ?>
-        </h3>
+        <h3 class="mb-4">Welcome, <?= esc($username) ?></h3>
 
-        <!-- CARDS -->
-        <div class="row g-3">
+        <!-- SUMMARY CARDS -->
+        <div class="row g-4">
 
             <div class="col-md-3">
-                <div class="card text-white bg-primary shadow">
+                <div class="card bg-primary text-white shadow border-0">
                     <div class="card-body">
                         <h6>Total Clients</h6>
-                        <h3>10</h3>
+                        <h3><?= $totalClients ?></h3>
                         <i class="bi bi-people fs-2"></i>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-3">
-                <div class="card text-white bg-success shadow">
+                <div class="card bg-success text-white shadow border-0">
                     <div class="card-body">
                         <h6>Total Bills</h6>
-                        <h3>25</h3>
+                        <h3><?= $totalBills ?></h3>
                         <i class="bi bi-receipt fs-2"></i>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-3">
-                <div class="card text-dark bg-warning shadow">
+                <div class="card bg-warning text-dark shadow border-0">
                     <div class="card-body">
                         <h6>Total Revenue</h6>
-                        <h3>₱50,000</h3>
+                        <h3>₱ <?= number_format($totalRevenue, 2) ?></h3>
                         <i class="bi bi-cash-stack fs-2"></i>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-3">
-                <div class="card text-white bg-danger shadow">
+                <div class="card bg-danger text-white shadow border-0">
                     <div class="card-body">
-                        <h6>Audit Logs</h6>
-                        <h3>12</h3>
+                        <h6>Recent Bills</h6>
+                        <h3><?= count($recentBills) ?></h3>
                         <i class="bi bi-clock-history fs-2"></i>
                     </div>
                 </div>
@@ -66,35 +63,72 @@
 
         </div>
 
-        <!-- TABLE -->
-        <div class="card mt-4 shadow">
-            <div class="card-header">
-                <h5>Recent Bills</h5>
+        <!-- ACTION BUTTONS -->
+        <div class="mt-4 mb-3">
+            <a href="/addClient" class="btn btn-primary me-2">
+                <i class="bi bi-person-plus"></i> Add Client
+            </a>
+
+            <a href="/billingHistory" class="btn btn-success">
+                <i class="bi bi-file-earmark-text"></i> View Billing
+            </a>
+        </div>
+
+        <!-- RECENT BILLS TABLE -->
+        <div class="card shadow border-0">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Recent Bills</h5>
             </div>
 
             <div class="card-body table-responsive">
-                <table class="table table-bordered table-hover">
+                <table class="table table-hover align-middle">
                     <thead class="table-dark">
                         <tr>
                             <th>Client</th>
                             <th>Meter</th>
-                            <th>Amount</th>
-                            <th>Date</th>
+                            <th class="text-end">Units</th>
+                            <th class="text-end">Amount</th>
+                            <th>Billing Date</th>
+                            <th>Due Date</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Juan Dela Cruz</td>
-                            <td>12345</td>
-                            <td>₱2,500</td>
-                            <td>2026-04-20</td>
-                        </tr>
-                        <tr>
-                            <td>Maria Santos</td>
-                            <td>67890</td>
-                            <td>₱1,800</td>
-                            <td>2026-04-19</td>
-                        </tr>
+
+                        <?php if (!empty($recentBills)): ?>
+                            <?php foreach ($recentBills as $bill): ?>
+                                <?php
+                                $isOverdue = strtotime($bill['due_date']) < time();
+                                ?>
+                                <tr>
+                                    <td><?= esc($bill['full_name']) ?></td>
+                                    <td><?= esc($bill['meter_number']) ?></td>
+
+                                    <td class="text-end">
+                                        <?= number_format($bill['units_consumed'], 2) ?>
+                                    </td>
+
+                                    <td class="fw-bold text-success text-end">
+                                        ₱ <?= number_format($bill['subtotal'], 2) ?>
+                                    </td>
+
+                                    <td><?= esc($bill['billing_date']) ?></td>
+
+                                    <td>
+                                        <span class="badge <?= $isOverdue ? 'bg-danger' : 'bg-warning text-dark' ?>">
+                                            <?= esc($bill['due_date']) ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">
+                                    No billing records found
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+
                     </tbody>
                 </table>
             </div>
@@ -102,10 +136,8 @@
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
 </body>
 
 </html>

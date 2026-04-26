@@ -3,14 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compute Billing</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
         body {
@@ -24,7 +20,13 @@
         .total-box {
             font-size: 2rem;
             font-weight: bold;
-            color: #198754;
+            color: #212529;
+            /* neutral (no green) */
+        }
+
+        .client-row:hover {
+            background-color: #f1f3f5;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -35,12 +37,9 @@
 
     <div style="margin-left: 300px;" class="p-4">
 
-        <!-- HEADER -->
+        <!-- HEADER (no icon) -->
         <div class="mb-4">
-            <h3 class="fw-bold">
-                <i class="bi bi-lightning-charge-fill text-warning"></i>
-                Compute Electrical Bill
-            </h3>
+            <h3 class="fw-bold">Compute Billing</h3>
             <p class="text-muted">Select a client and calculate electricity usage.</p>
         </div>
 
@@ -48,12 +47,18 @@
 
             <!-- CLIENT LIST -->
             <div class="col-md-6">
-                <div class="card shadow-sm">
+                <div class="card shadow border-0">
                     <div class="card-header bg-white fw-semibold">
-                        <i class="bi bi-people-fill"></i> Clients
+                        Clients
                     </div>
 
                     <div class="card-body p-0">
+
+                        <!-- SEARCH -->
+                        <div class="p-3">
+                            <input type="text" class="form-control" placeholder="Search client...">
+                        </div>
+
                         <table class="table table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
@@ -64,10 +69,9 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($clients as $row): ?>
-                                    <tr>
+                                    <tr class="client-row" onclick='selectClient(<?= json_encode($row) ?>)'>
                                         <td>
-                                            <input type="radio" name="selectedClient"
-                                                onclick='selectClient(<?= json_encode($row) ?>)'>
+                                            <input type="radio" name="selectedClient">
                                         </td>
                                         <td><?= esc($row['full_name']) ?></td>
                                         <td><?= esc($row['meter_number']) ?></td>
@@ -75,34 +79,40 @@
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
+
                     </div>
                 </div>
             </div>
 
             <!-- BILLING FORM -->
             <div class="col-md-6">
-                <div class="card shadow-sm">
+                <div class="card shadow border-0">
                     <div class="card-header bg-white fw-semibold">
-                        <i class="bi bi-calculator-fill"></i> Billing Calculator
+                        Billing Calculator
                     </div>
 
                     <div class="card-body">
 
+                        <!-- CLIENT -->
                         <div class="mb-3">
                             <label class="form-label">Client</label>
                             <input type="text" id="clientName" class="form-control" disabled>
                         </div>
 
+                        <!-- METER -->
                         <div class="mb-3">
                             <label class="form-label">Meter</label>
                             <input type="text" id="clientMeter" class="form-control" disabled>
                         </div>
 
+                        <!-- KW -->
                         <div class="mb-3">
-                            <label class="form-label">Consumption (KW)</label>
-                            <input type="number" id="kwInput" class="form-control" oninput="computeBill()">
+                            <label class="form-label">Consumption (kWh)</label>
+                            <input type="number" id="kwInput" class="form-control" placeholder="Enter kWh"
+                                oninput="computeBill()">
                         </div>
 
+                        <!-- DUE DATE -->
                         <div class="mb-3">
                             <label class="form-label">Due Date</label>
                             <input type="date" id="dueDateInput" class="form-control" min="<?= date('Y-m-d') ?>">
@@ -110,6 +120,7 @@
 
                         <hr>
 
+                        <!-- TOTAL -->
                         <div class="text-center mb-3">
                             <div class="text-muted">Total Bill</div>
                             <div class="total-box">
@@ -117,8 +128,9 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-success w-100" onclick="saveBill(event)">
-                            <i class="bi bi-save"></i> Save Bill
+                        <!-- BUTTON -->
+                        <button class="btn btn-dark w-100" onclick="saveBill(event)">
+                            Save Bill
                         </button>
 
                     </div>
@@ -135,14 +147,13 @@
         function selectClient(client) {
             selectedClient = client;
 
-            document.getElementById("clientName").innerText = client.full_name;
-            document.getElementById("clientMeter").innerText = client.meter_number;
+            document.getElementById("clientName").value = client.full_name;
+            document.getElementById("clientMeter").value = client.meter_number;
 
             document.getElementById("kwInput").value = "";
             document.getElementById("totalBill").innerText = "0.00";
         }
 
-        // ⚡ COMPUTE BILL
         function computeBill() {
             const kw = parseFloat(document.getElementById("kwInput").value) || 0;
             let total = 0;
@@ -159,9 +170,7 @@
             document.getElementById("totalBill").innerText = total.toFixed(2);
         }
 
-        // 💾 SAVE BILL
         function saveBill(event) {
-            // ✅ Check client
             if (!selectedClient) {
                 alert("Please select a client.");
                 return;
@@ -170,72 +179,51 @@
             const kw = parseFloat(document.getElementById("kwInput").value);
             const dueDate = document.getElementById("dueDateInput").value;
 
-            // ✅ Validate inputs
             if (!kw || kw <= 0) {
-                alert("Enter valid consumption (KW).");
+                alert("Enter valid consumption.");
                 return;
             }
 
             if (!dueDate) {
-                alert("Please select a due date.");
+                alert("Select due date.");
                 return;
             }
 
-            // ✅ Button loading state
             const btn = event.target;
             btn.disabled = true;
             btn.innerText = "Saving...";
 
             fetch("<?= base_url('compute_bill') ?>", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     client_id: selectedClient.client_id,
                     billing_date: new Date().toISOString().split("T")[0],
                     due_date: dueDate,
                     total_amount: computedTotal,
-                    units: parseFloat(document.getElementById("kwInput").value) // ✅ ADD THIS
+                    units: kw
                 })
             })
-                .then(async res => {
-                    // 🔥 Handle non-JSON responses safely
-                    let data;
-                    try {
-                        data = await res.json();
-                    } catch {
-                        throw new Error("Invalid server response");
-                    }
-                    return data;
-                })
+                .then(res => res.json())
                 .then(data => {
                     btn.disabled = false;
-                    btn.innerText = "💾 Save Bill";
+                    btn.innerText = "Save Bill";
 
                     if (data.status === "success") {
-                        alert("✅ Bill saved successfully!");
-
-                        // 🔄 Reset form
+                        alert("Bill saved successfully!");
                         document.getElementById("kwInput").value = "";
                         document.getElementById("totalBill").innerText = "0.00";
-
                     } else {
-                        console.log("Server error:", data);
-                        alert("❌ Failed: " + JSON.stringify(data.message || data));
+                        alert("Failed to save.");
                     }
                 })
-                .catch(error => {
-                    console.error("Fetch error:", error);
-
+                .catch(() => {
                     btn.disabled = false;
-                    btn.innerText = "💾 Save Bill";
-
-                    alert("⚠️ Server error or invalid response.");
+                    btn.innerText = "Save Bill";
+                    alert("Server error.");
                 });
         }
 
-        // 📅 DEFAULT DUE DATE (+7 DAYS)
         window.onload = function () {
             const d = new Date();
             d.setDate(d.getDate() + 7);

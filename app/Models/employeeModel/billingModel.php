@@ -1,28 +1,30 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\employeeModel;
 
 use CodeIgniter\Model;
 
-class billingModel extends Model
+class BillingModel extends Model
 {
-    protected $table = 'billing';
-    protected $primaryKey = 'id';
+    protected $table = 'bills';
+    protected $primaryKey = 'bill_id';
 
     public function getBillingHistory()
     {
-        return $this->db->table('billing')
-            ->join('clients', 'clients.id = billing.client_id')
+        return $this->db->table('bills')
+            ->join('clients', 'clients.client_id = bills.client_id')
+            ->join('bill_details', 'bill_details.bill_id = bills.bill_id')
             ->select('
                 clients.full_name,
                 clients.meter_number,
-                billing.unit_consumed,
-                billing.rate_per_unit,
-                billing.total_amount,
-                billing.billing_date,
-                billing.due_date
+                bills.billing_date,
+                bills.due_date,
+                MAX(bill_details.rate_per_unit) as rate_per_unit,
+                SUM(bill_details.units_consumed) as units_consumed,
+                SUM(bill_details.subtotal) as subtotal
             ')
-            ->orderBy('billing.billing_date', 'DESC')
+            ->groupBy('bills.bill_id')
+            ->orderBy('bills.billing_date', 'DESC')
             ->get()
             ->getResultArray();
     }

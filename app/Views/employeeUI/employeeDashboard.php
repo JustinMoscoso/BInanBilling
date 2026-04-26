@@ -3,41 +3,33 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons (IMPORTANT) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
 </head>
 
 <body>
 
-    <!-- Sidebar -->
     <?= view('layout/employeeNav') ?>
 
-    <!-- Main Content -->
     <div style="margin-left: 300px;" class="p-4">
 
         <!-- Welcome -->
         <div class="mb-4">
             <h3>Welcome, <?= session()->get('username') ?></h3>
-            <p class="text-muted">Dashboard</p>
+            <p class="text-muted">Billing Dashboard</p>
         </div>
 
-        <!-- Cards -->
-        <div class="row g-4">
+        <!-- SUMMARY CARDS -->
+        <div class="row g-4 mb-4">
 
             <div class="col-md-4">
                 <div class="card shadow-sm border-0 text-center">
                     <div class="card-body">
-                        <i class="bi bi-file-earmark-text display-5 text-primary"></i>
-                        <h5 class="mt-3">My Bills</h5>
-                        <p class="text-muted">View your billing records</p>
-                        <a href="#" class="btn btn-primary btn-sm">View</a>
+                        <i class="bi bi-cash-stack display-5 text-danger"></i>
+                        <h4 class="mt-3">₱ <?= number_format($totalUnpaid, 2) ?></h4>
+                        <p class="text-muted">Total Billing</p>
                     </div>
                 </div>
             </div>
@@ -45,10 +37,9 @@
             <div class="col-md-4">
                 <div class="card shadow-sm border-0 text-center">
                     <div class="card-body">
-                        <i class="bi bi-clock-history display-5 text-success"></i>
-                        <h5 class="mt-3">Usage History</h5>
-                        <p class="text-muted">Track your consumption</p>
-                        <a href="#" class="btn btn-success btn-sm">View</a>
+                        <i class="bi bi-receipt display-5 text-primary"></i>
+                        <h4 class="mt-3"><?= count($bills) ?></h4>
+                        <p class="text-muted">Total Bills</p>
                     </div>
                 </div>
             </div>
@@ -56,36 +47,67 @@
             <div class="col-md-4">
                 <div class="card shadow-sm border-0 text-center">
                     <div class="card-body">
-                        <i class="bi bi-person display-5 text-warning"></i>
-                        <h5 class="mt-3">Profile</h5>
-                        <p class="text-muted">Update your information</p>
-                        <a href="#" class="btn btn-warning btn-sm text-white">Edit</a>
+                        <i class="bi bi-lightning-charge display-5 text-warning"></i>
+                        <h4 class="mt-3">
+                            <?= isset($latestBill['units_consumed']) ? number_format($latestBill['units_consumed'], 2) : 0 ?>
+                        </h4>
+                        <p class="text-muted">Latest Units Used</p>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- Table -->
-        <div class="card mt-5 shadow-sm border-0">
+        <!-- LATEST BILL ALERT -->
+        <?php if ($latestBill): ?>
+            <div class="alert alert-warning shadow-sm">
+                <strong>Latest Bill:</strong>
+                ₱ <?= number_format($latestBill['subtotal'], 2) ?> |
+                Due: <?= $latestBill['due_date'] ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- ACTION BUTTONS -->
+        <div class="mb-4">
+            <a href="/billingHistory" class="btn btn-primary me-2">
+                <i class="bi bi-file-earmark-text"></i> View Billing History
+            </a>
+
+            <a href="/computeBilling" class="btn btn-success">
+                <i class="bi bi-calculator"></i> Compute Billing
+            </a>
+        </div>
+
+        <!-- RECENT BILLS TABLE -->
+        <div class="card shadow-sm border-0">
             <div class="card-body">
 
-                <h5>Recent Activity</h5>
+                <h5 class="mb-3">Recent Bills</h5>
 
                 <table class="table table-hover">
                     <thead class="table-dark">
                         <tr>
-                            <th>Date</th>
-                            <th>Activity</th>
-                            <th>Status</th>
+                            <th>Client</th>
+                            <th>Amount</th>
+                            <th>Units</th>
+                            <th>Due Date</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>April 21, 2026</td>
-                            <td>Logged in</td>
-                            <td><span class="badge bg-success">Success</span></td>
-                        </tr>
+
+                        <?php foreach (array_slice($bills, 0, 5) as $bill): ?>
+                            <tr>
+                                <td><?= $bill['full_name'] ?></td>
+                                <td>₱ <?= number_format($bill['subtotal'], 2) ?></td>
+                                <td><?= number_format($bill['units_consumed'], 2) ?></td>
+                                <td>
+                                    <span class="badge bg-warning text-dark">
+                                        <?= $bill['due_date'] ?>
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+
                     </tbody>
                 </table>
 
@@ -94,7 +116,6 @@
 
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

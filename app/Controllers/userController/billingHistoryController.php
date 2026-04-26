@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Controllers\adminController;
+namespace App\Controllers\UserController;
 
 use App\Controllers\BaseController;
-use App\Models\BillingModel;
+use App\Models\employeeModel\BillingModel;
 
-class billingHistoryController extends BaseController
+class BillingHistoryController extends BaseController
 {
     public function index()
     {
-        $billingModel = new BillingModel();
+        $model = new BillingModel();
 
-        $data['billing'] = $billingModel->getBillingHistory();
+        $data['billing'] = $model->getBillingHistory();
 
-        return view('employeeUI/billingHistory', $data);
+        return view('employeeUI/billingHistory', $data); // ✅ FIXED
     }
 }

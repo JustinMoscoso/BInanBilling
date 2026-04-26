@@ -3,7 +3,6 @@
 
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="mb-0"><?= esc($title ?? 'Table') ?></h5>
 
             <?php if (!empty($addUrl)): ?>
                 <a href="<?= site_url($addUrl) ?>" class="btn btn-primary btn-sm">
@@ -12,7 +11,7 @@
             <?php endif; ?>
         </div>
 
-        <!-- 🔍 Search -->
+        <!--  Search -->
         <div class="mb-3">
             <input type="text" class="form-control" placeholder="Search..." onkeyup="filterTable(this)">
         </div>

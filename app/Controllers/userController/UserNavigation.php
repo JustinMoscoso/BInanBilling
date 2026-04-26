@@ -1,17 +1,28 @@
 <?php
 
 namespace App\Controllers\UserController;
+
 use App\Controllers\BaseController;
+use App\Models\employeeModel\BillingModel;
 
 class UserNavigation extends BaseController
 {
     public function index()
     {
-        return view('employeeUI/employeeDashboard');
-    }
+        $model = new BillingModel();
 
-    public function billingPage()
-    {
-        return view('employeeUI/computeBilling');
+        $bills = $model->getBillingHistory();
+
+        // Summary calculations
+        $totalUnpaid = array_sum(array_column($bills, 'subtotal'));
+        $latestBill = $bills[0] ?? null;
+
+        $data = [
+            'bills' => $bills,
+            'totalUnpaid' => $totalUnpaid,
+            'latestBill' => $latestBill
+        ];
+
+        return view('employeeUI/employeeDashboard', $data);
     }
 }
