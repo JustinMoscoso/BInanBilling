@@ -43,16 +43,5 @@ abstract class BaseController extends Controller
         // $this->session = service('session');
     }
 
-    protected function logAudit($action, $table, $targetId)
-    {
-        $db = \Config\Database::connect();
 
-        $db->table('audit_logs')->insert([
-            'user_id' => session()->get('user_id'),
-            'action' => $action,
-            'target_table' => $table,
-            'target_id' => $targetId,
-            'timestamp' => date('Y-m-d H:i:s')
-        ]);
-    }
 }

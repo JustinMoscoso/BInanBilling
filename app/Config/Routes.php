@@ -29,6 +29,7 @@ $routes->group('', ['namespace' => 'App\Controllers\AdminController'], function 
     // Client
     $routes->get('/addClient', 'ClientController::index');
     $routes->post('/addClient', 'ClientController::store');
+    $routes->get('employee/delete/(:num)', 'adminController\EmployeeListController::delete/$1');
 });
 
 

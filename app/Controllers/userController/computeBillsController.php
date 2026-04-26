@@ -16,10 +16,11 @@ class computeBillsController extends BaseController
 
     public function billComputation()
     {
+        helper('audit'); // ✅ load audit helper
+
         try {
             $data = $this->request->getJSON(true);
 
-            // ✅ GET EMPLOYEE FROM SESSION
             $employeeId = session()->get('user_id');
 
             if (!$employeeId) {
@@ -29,24 +30,21 @@ class computeBillsController extends BaseController
                 ]);
             }
 
-            // ✅ VALIDATE INPUT (FIXED: includes units)
             if (
                 !$data ||
                 !isset(
                 $data['client_id'],
                 $data['billing_date'],
                 $data['due_date'],
-                $data['units'] // ✅ FIXED
+                $data['units']
             )
             ) {
                 return $this->response->setJSON([
                     'status' => 'error',
-                    'message' => 'Invalid input data',
-                    'received' => $data
+                    'message' => 'Invalid input data'
                 ]);
             }
 
-            // ✅ GET VALUES
             $clientId = $data['client_id'];
             $billingDate = $data['billing_date'];
             $dueDate = $data['due_date'];
@@ -59,7 +57,7 @@ class computeBillsController extends BaseController
                 ]);
             }
 
-            // 🔥 COMPUTE TOTAL IN BACKEND (DO NOT TRUST FRONTEND)
+            // 🔥 COMPUTE
             if ($units <= 200) {
                 $rate = 10;
                 $total = $units * 10;
@@ -71,7 +69,7 @@ class computeBillsController extends BaseController
                 $total = (200 * 10) + (300 * 13) + (($units - 500) * 15);
             }
 
-            // ✅ INSERT INTO bills TABLE
+            // ✅ INSERT BILL
             $billId = $this->billModel->insert([
                 'client_id' => $clientId,
                 'computed_by' => $employeeId,
@@ -82,14 +80,10 @@ class computeBillsController extends BaseController
             ]);
 
             if (!$billId) {
-                return $this->response->setJSON([
-                    'status' => 'error',
-                    'message' => $this->billModel->errors(),
-                    'db_error' => $this->billModel->db->error()
-                ]);
+                throw new \Exception('Failed to insert bill');
             }
 
-            // ✅ INSERT INTO bill_details TABLE
+            // ✅ INSERT DETAILS
             $db = \Config\Database::connect();
 
             $db->table('bill_details')->insert([
@@ -99,6 +93,21 @@ class computeBillsController extends BaseController
                 'subtotal' => $total
             ]);
 
+            // ✅ AUDIT SUCCESS
+            log_audit(
+                'create',
+                'bills',
+                $billId,
+                null,
+                [
+                    'client_id' => $clientId,
+                    'computed_by' => $employeeId,
+                    'units' => $units,
+                    'rate' => $rate,
+                    'total' => $total
+                ]
+            );
+
             return $this->response->setJSON([
                 'status' => 'success',
                 'bill_id' => $billId,
@@ -106,6 +115,19 @@ class computeBillsController extends BaseController
             ]);
 
         } catch (\Exception $e) {
+
+            // ❗ AUDIT FAILURE
+            log_audit(
+                'create_failed',
+                'bills',
+                null,
+                null,
+                [
+                    'input' => $this->request->getJSON(true),
+                    'error' => $e->getMessage()
+                ]
+            );
+
             return $this->response->setJSON([
                 'status' => 'error',
                 'message' => $e->getMessage()
