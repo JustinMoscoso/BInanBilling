@@ -16,11 +16,10 @@ class computeBillsController extends BaseController
 
     public function billComputation()
     {
-        helper('audit'); // ✅ load audit helper
+        helper('audit');
 
         try {
             $data = $this->request->getJSON(true);
-
             $employeeId = session()->get('user_id');
 
             if (!$employeeId) {
@@ -57,7 +56,24 @@ class computeBillsController extends BaseController
                 ]);
             }
 
-            // 🔥 COMPUTE
+            // 🔒 PREVENT DUPLICATE BILL (same month & year)
+            $month = date('m', strtotime($billingDate));
+            $year = date('Y', strtotime($billingDate));
+
+            $existingBill = $this->billModel
+                ->where('client_id', $clientId)
+                ->where('MONTH(billing_date)', $month)
+                ->where('YEAR(billing_date)', $year)
+                ->first();
+
+            if ($existingBill) {
+                return $this->response->setJSON([
+                    'status' => 'exists',
+                    'message' => 'This client already has a bill for this month.'
+                ]);
+            }
+
+            // 🔥 COMPUTE BILL
             if ($units <= 200) {
                 $rate = 10;
                 $total = $units * 10;

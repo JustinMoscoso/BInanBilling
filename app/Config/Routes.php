@@ -23,13 +23,13 @@ $routes->group('', ['namespace' => 'App\Controllers\AdminController'], function 
     $routes->post('/addEmployee', 'EmployeeController::store');
     $routes->get('/employees', 'EmployeeListController::index');
 
-    // Navigation (optional pages)
-    $routes->get('/homePage', 'AdminNavigation::home');
 
     // Client
     $routes->get('/addClient', 'ClientController::index');
     $routes->post('/addClient', 'ClientController::store');
-    $routes->get('employee/delete/(:num)', 'adminController\EmployeeListController::delete/$1');
+    $routes->get('employee/delete/(:num)', 'EmployeeListController::delete/$1');
+    $routes->get('audit-logs', 'AuditController::index');
+    $routes->post('employee/update/(:num)', 'EmployeeListController::update/$1');
 });
 
 

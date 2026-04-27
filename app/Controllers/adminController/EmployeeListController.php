@@ -14,6 +14,29 @@ class EmployeeListController extends BaseController
         $data['employees'] = $model->where('role_id !=', 1)->findAll();
         return view('adminUI/EmployeeList', $data);
     }
+    public function update($id)
+    {
+        helper('audit');
+
+        $model = new \App\Models\adminModel\GetEmployeeModel();
+
+        $oldData = $model->find($id);
+
+        $newData = [
+            'first_name' => $this->request->getPost('first_name'),
+            'last_name' => $this->request->getPost('last_name'),
+            'username' => $this->request->getPost('username'),
+        ];
+
+        $model->update($id, $newData);
+
+        unset($oldData['password_hash']);
+
+        log_audit('update', 'employees', $id, $oldData, $newData);
+
+        return redirect()->back()->with('success', 'Employee updated successfully');
+    }
+
     public function delete($id)
     {
         helper('audit');

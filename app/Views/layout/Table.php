@@ -45,7 +45,8 @@
                                     <td class="text-center">
 
                                         <?php if (in_array('edit', $actions)): ?>
-                                            <button class="btn btn-sm btn-warning" onclick='openEditModal(<?= json_encode($row) ?>)'>
+                                            <button class="btn btn-sm btn-primary text-white"
+                                                onclick='openEditModal(<?= json_encode($row) ?>)'>
                                                 Edit
                                             </button>
                                         <?php endif; ?>

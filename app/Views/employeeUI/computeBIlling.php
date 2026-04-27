@@ -21,7 +21,6 @@
             font-size: 2rem;
             font-weight: bold;
             color: #212529;
-            /* neutral (no green) */
         }
 
         .client-row:hover {
@@ -37,7 +36,9 @@
 
     <div style="margin-left: 300px;" class="p-4">
 
-        <!-- HEADER (no icon) -->
+        <!-- ALERT -->
+        <div id="alertBox"></div>
+
         <div class="mb-4">
             <h3 class="fw-bold">Compute Billing</h3>
             <p class="text-muted">Select a client and calculate electricity usage.</p>
@@ -53,8 +54,6 @@
                     </div>
 
                     <div class="card-body p-0">
-
-                        <!-- SEARCH -->
                         <div class="p-3">
                             <input type="text" class="form-control" placeholder="Search client...">
                         </div>
@@ -70,21 +69,18 @@
                             <tbody>
                                 <?php foreach ($clients as $row): ?>
                                     <tr class="client-row" onclick='selectClient(<?= json_encode($row) ?>)'>
-                                        <td>
-                                            <input type="radio" name="selectedClient">
-                                        </td>
+                                        <td><input type="radio" name="selectedClient"></td>
                                         <td><?= esc($row['full_name']) ?></td>
                                         <td><?= esc($row['meter_number']) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
 
-            <!-- BILLING FORM -->
+            <!-- BILLING -->
             <div class="col-md-6">
                 <div class="card shadow border-0">
                     <div class="card-header bg-white fw-semibold">
@@ -93,26 +89,22 @@
 
                     <div class="card-body">
 
-                        <!-- CLIENT -->
                         <div class="mb-3">
                             <label class="form-label">Client</label>
                             <input type="text" id="clientName" class="form-control" disabled>
                         </div>
 
-                        <!-- METER -->
                         <div class="mb-3">
                             <label class="form-label">Meter</label>
                             <input type="text" id="clientMeter" class="form-control" disabled>
                         </div>
 
-                        <!-- KW -->
                         <div class="mb-3">
                             <label class="form-label">Consumption (kWh)</label>
                             <input type="number" id="kwInput" class="form-control" placeholder="Enter kWh"
                                 oninput="computeBill()">
                         </div>
 
-                        <!-- DUE DATE -->
                         <div class="mb-3">
                             <label class="form-label">Due Date</label>
                             <input type="date" id="dueDateInput" class="form-control" min="<?= date('Y-m-d') ?>">
@@ -128,7 +120,42 @@
                             </div>
                         </div>
 
-                        <!-- BUTTON -->
+                        <!-- 🔥 BREAKDOWN TABLE -->
+                        <h6 class="fw-semibold mb-3">Computation Breakdown</h6>
+
+                        <div class="table-responsive mb-3">
+                            <table class="table table-bordered text-center">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Range (kWh)</th>
+                                        <th>Rate</th>
+                                        <th>Units Used</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>0 - 200</td>
+                                        <td>₱10</td>
+                                        <td id="tier1Units">0</td>
+                                        <td>₱<span id="tier1Total">0.00</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>201 - 500</td>
+                                        <td>₱13</td>
+                                        <td id="tier2Units">0</td>
+                                        <td>₱<span id="tier2Total">0.00</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>500+</td>
+                                        <td>₱15</td>
+                                        <td id="tier3Units">0</td>
+                                        <td>₱<span id="tier3Total">0.00</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
                         <button class="btn btn-dark w-100" onclick="saveBill(event)">
                             Save Bill
                         </button>
@@ -152,27 +179,69 @@
 
             document.getElementById("kwInput").value = "";
             document.getElementById("totalBill").innerText = "0.00";
+
+            // reset table
+            document.getElementById("tier1Units").innerText = 0;
+            document.getElementById("tier2Units").innerText = 0;
+            document.getElementById("tier3Units").innerText = 0;
+
+            document.getElementById("tier1Total").innerText = "0.00";
+            document.getElementById("tier2Total").innerText = "0.00";
+            document.getElementById("tier3Total").innerText = "0.00";
         }
 
         function computeBill() {
             const kw = parseFloat(document.getElementById("kwInput").value) || 0;
-            let total = 0;
+
+            let tier1 = 0, tier2 = 0, tier3 = 0;
 
             if (kw <= 200) {
-                total = kw * 10;
+                tier1 = kw;
             } else if (kw <= 500) {
-                total = (200 * 10) + ((kw - 200) * 13);
+                tier1 = 200;
+                tier2 = kw - 200;
             } else {
-                total = (200 * 10) + (300 * 13) + ((kw - 500) * 15);
+                tier1 = 200;
+                tier2 = 300;
+                tier3 = kw - 500;
             }
+
+            const t1 = tier1 * 10;
+            const t2 = tier2 * 13;
+            const t3 = tier3 * 15;
+
+            const total = t1 + t2 + t3;
+
+            document.getElementById("tier1Units").innerText = tier1;
+            document.getElementById("tier2Units").innerText = tier2;
+            document.getElementById("tier3Units").innerText = tier3;
+
+            document.getElementById("tier1Total").innerText = t1.toFixed(2);
+            document.getElementById("tier2Total").innerText = t2.toFixed(2);
+            document.getElementById("tier3Total").innerText = t3.toFixed(2);
 
             computedTotal = total;
             document.getElementById("totalBill").innerText = total.toFixed(2);
         }
 
+        function showAlert(message, type) {
+            const alertBox = document.getElementById("alertBox");
+
+            alertBox.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle me-2"></i> ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+
+            setTimeout(() => {
+                alertBox.innerHTML = "";
+            }, 3000);
+        }
+
         function saveBill(event) {
             if (!selectedClient) {
-                alert("Please select a client.");
+                showAlert("Please select a client.", "warning");
                 return;
             }
 
@@ -180,12 +249,12 @@
             const dueDate = document.getElementById("dueDateInput").value;
 
             if (!kw || kw <= 0) {
-                alert("Enter valid consumption.");
+                showAlert("Enter valid consumption.", "warning");
                 return;
             }
 
             if (!dueDate) {
-                alert("Select due date.");
+                showAlert("Select due date.", "warning");
                 return;
             }
 
@@ -210,17 +279,22 @@
                     btn.innerText = "Save Bill";
 
                     if (data.status === "success") {
-                        alert("Bill saved successfully!");
+                        showAlert("Bill saved successfully!", "success");
+
                         document.getElementById("kwInput").value = "";
                         document.getElementById("totalBill").innerText = "0.00";
+
+                    } else if (data.status === "exists") {
+                        showAlert("This client already has a bill for this month.", "warning");
+
                     } else {
-                        alert("Failed to save.");
+                        showAlert("Failed to save.", "danger");
                     }
                 })
                 .catch(() => {
                     btn.disabled = false;
                     btn.innerText = "Save Bill";
-                    alert("Server error.");
+                    showAlert("Server error.", "danger");
                 });
         }
 
@@ -231,6 +305,7 @@
                 d.toISOString().split("T")[0];
         };
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

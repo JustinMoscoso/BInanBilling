@@ -7,6 +7,9 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+
+    </style>
 </head>
 
 <body>
@@ -17,8 +20,13 @@
 
         <!-- Welcome -->
         <div class="mb-4">
-            <h3>Welcome, <?= session()->get('username') ?></h3>
+            <h3>Welcome, <?= esc(
+                session()->get('full_name')
+                ?: trim((session()->get('first_name') ?? '') . ' ' . (session()->get('last_name') ?? ''))
+                ?: explode('@', session()->get('username'))[0]
+            ) ?></h3>
             <p class="text-muted">Billing Dashboard</p>
+
         </div>
 
         <!-- SUMMARY CARDS -->
